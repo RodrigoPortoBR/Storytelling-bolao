@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendário de Posts — Bolão CazéTV Copa 2026</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    /* ── TOKENS ──────────────────────────────────────────────── */
+    :root {
+      --bg: #111113;
+      --surf: #1c1c1f;
+      --surf2: #252528;
+      --surf3: #2e2e32;
+      --border: #2c2c30;
+      --border2: #3c3c42;
+      --hi: #ffffff;
+      --txt: #d8d8de;
+      --txt2: #9898a6;
+      --txt3: #58585e;
+      --txt4: #35353a;
+      --overlay: rgba(0, 0, 0, .82);
+      --shadow: 0 12px 40px rgba(0, 0, 0, .6);
+      --cell: #1c1c1f;
+      --cell-off: #141416;
+      --cell-hover: #26262a;
+      --cell-spec: #1e1b0c;
+      --cell-spec-hover: #252210;
+      --hdr-shadow: 0 2px 20px rgba(0, 0, 0, .6);
+      --dot-border: rgba(0, 0, 0, .3);
+      --red: #e11d24;
+      --p1: #6366f1;
+      --p2: #f97316;
+      --p3: #22c55e;
+      --gold: #fbbf24;
+      --ig: #d63480;
+      --tt: #5bcfdc;
+      --xc: #1d9bf0;
+      --wa: #25D366;
+      --ig-bg: linear-gradient(135deg, #833ab4, #d63480);
+      --tt-bg: #010101;
+      --xc-bg: #000;
+      --wa-bg: #075E54;
+    }
+
+    body.light {
+      --bg: #eef0f5;
+      --surf: #ffffff;
+      --surf2: #f3f4f7;
+      --surf3: #e8eaee;
+      --border: #dde0e8;
+      --border2: #c8ccd6;
+      --hi: #0a0a0f;
+      --txt: #1e1e28;
+      --txt2: #5a5a6e;
+      --txt3: #9898a8;
+      --txt4: #c8c8d4;
+      --overlay: rgba(20, 20, 40, .55);
+      --shadow: 0 12px 40px rgba(0, 0, 40, .14);
+      --cell: #ffffff;
+      --cell-off: #f5f6f9;
+      --cell-hover: #f0f2f7;
+      --cell-spec: #fffbea;
+      --cell-spec-hover: #fff7d4;
+      --hdr-shadow: 0 2px 12px rgba(0, 0, 0, .08);
+      --dot-border: rgba(255, 255, 255, .6);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+      transition: background .25s, color .25s
+    }
+
+    /* ── HEADER ── */
+    .hdr {
+      background: var(--surf);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--hdr-shadow);
+      transition: background .25s, border-color .25s
+    }
+
+    .hdr-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px
+    }
+
+    .hdr-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px
+    }
+
+    .logo {
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase
+    }
+
+    .htitle {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--hi)
+    }
+
+    .hsub {
+      font-size: 11px;
+      color: var(--txt2)
+    }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--surf2);
+      color: var(--txt2);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+      letter-spacing: .3px
+    }
+
+    .theme-btn:hover {
+      border-color: var(--txt3);
+      color: var(--txt)
+    }
+
+    .theme-icon {
+      font-size: 14px;
+      line-height: 1
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .fb {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 13px;
+      border-radius: 16px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--txt2);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .fb:hover {
+      border-color: var(--txt3);
+      color: var(--txt)
+    }
+
+    .fb.on {
+      border-color: transparent;
+      color: #fff
+    }
+
+    .fb[data-ch=all].on {
+      background: #4a4a56
+    }
+
+    body.light .fb[data-ch=all].on {
+      background: #3a3a4a;
+      color: #fff
+    }
+
+    .fb[data-ch=instagram].on {
+      background: linear-gradient(135deg, #833ab4, #d63480)
+    }
+
+    .fb[data-ch=tiktok].on {
+      background: #010101;
+      border: 1px solid var(--tt);
+      color: var(--tt)
+    }
+
+    .fb[data-ch=x].on {
+      background: #0d6fa8
+    }
+
+    .fb[data-ch=whatsapp].on {
+      background: #128C3E
+    }
+
+    .fdot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .fd-all {
+      background: var(--txt3)
+    }
+
+    .fd-ig {
+      background: var(--ig)
+    }
+
+    .fd-tt {
+      background: var(--tt)
+    }
+
+    .fd-x {
+      background: var(--xc)
+    }
+
+    .fd-wa {
+      background: var(--wa)
+    }
+
+    /* ── STATS ── */
+    .stats {
+      background: var(--surf2);
+      border-bottom: 1px solid var(--border);
+      padding: 7px 20px;
+      display: flex;
+      gap: 18px;
+      font-size: 11px;
+      color: var(--txt3);
+      flex-wrap: wrap;
+      transition: background .25s
+    }
+
+    .stat strong {
+      color: var(--txt2)
+    }
+
+    .stat-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle
+    }
+
+    /* ── CALENDAR ── */
+    .cal {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 20px
+    }
+
+    .month-block {
+      margin-bottom: 40px
+    }
+
+    .month-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--hi);
+      margin-bottom: 8px
+    }
+
+    .phase-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap
+    }
+
+    .pb-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--txt2)
+    }
+
+    .pb-swatch {
+      width: 20px;
+      height: 4px;
+      border-radius: 2px
+    }
+
+    .wd-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 4px
+    }
+
+    .wd {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--txt3);
+      padding: 4px 0
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px
+    }
+
+    /* ── DAY CELL ── */
+    .dc {
+      min-height: 92px;
+      padding: 8px 8px 7px;
+      border-radius: 10px;
+      background: var(--cell);
+      border: 1px solid var(--border);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: background .15s, border-color .15s, box-shadow .15s
+    }
+
+    .dc.blank {
+      background: transparent;
+      border-color: transparent;
+      pointer-events: none
+    }
+
+    .dc.off {
+      background: var(--cell-off);
+      border-color: transparent;
+      opacity: .4;
+      pointer-events: none
+    }
+
+    .dc.on {
+      cursor: pointer
+    }
+
+    .dc.on:hover {
+      background: var(--cell-hover);
+      border-color: var(--border2);
+      box-shadow: var(--shadow)
+    }
+
+    .dc.p1 {
+      border-left: 3px solid var(--p1)
+    }
+
+    .dc.p2 {
+      border-left: 3px solid var(--p2)
+    }
+
+    .dc.p3 {
+      border-left: 3px solid var(--p3)
+    }
+
+    .dc.spec {
+      background: var(--cell-spec);
+      border-color: rgba(251, 191, 36, .2)
+    }
+
+    .dc.spec:hover {
+      background: var(--cell-spec-hover)
+    }
+
+    .dc.today {
+      box-shadow: 0 0 0 2px var(--red) inset !important
+    }
+
+    .dnum {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--hi);
+      line-height: 1
+    }
+
+    .dc.off .dnum {
+      color: var(--txt4)
+    }
+
+    .star-lbl {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      font-size: 9px;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: .2px
+    }
+
+    .dots-area {
+      margin-top: auto;
+      padding-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transition: opacity .15s, transform .15s;
+      box-shadow: 0 0 0 1.5px var(--dot-border)
+    }
+
+    .dot:hover {
+      transform: scale(1.3)
+    }
+
+    .dot.faded {
+      opacity: .1
+    }
+
+    .dot-instagram {
+      background: var(--ig)
+    }
+
+    .dot-tiktok {
+      background: var(--tt)
+    }
+
+    .dot-x {
+      background: var(--xc)
+    }
+
+    .dot-whatsapp {
+      background: var(--wa)
+    }
+
+    .dcount {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--txt3);
+      letter-spacing: .2px
+    }
+
+    /* ── MODAL ── */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    .backdrop.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: var(--surf);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transform: translateY(18px) scale(.97);
+      transition: transform .22s
+    }
+
+    .backdrop.open .modal {
+      transform: translateY(0) scale(1)
+    }
+
+    .mhdr {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0
+    }
+
+    .mdate {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .mbig {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--hi);
+      line-height: 1;
+      flex-shrink: 0;
+      letter-spacing: -2px
+    }
+
+    .minfo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .mwd {
+      font-size: 11px;
+      color: var(--txt2);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      font-weight: 600
+    }
+
+    .mmy {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--txt)
+    }
+
+    .mbadges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 4px
+    }
+
+    .bph {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      letter-spacing: .3px
+    }
+
+    .bp1 {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc
+    }
+
+    .bp2 {
+      background: rgba(249, 115, 22, .18);
+      color: #fdba74
+    }
+
+    .bp3 {
+      background: rgba(34, 197, 94, .18);
+      color: #86efac
+    }
+
+    body.light .bp1 {
+      background: rgba(99, 102, 241, .12);
+      color: #4f46e5
+    }
+
+    body.light .bp2 {
+      background: rgba(249, 115, 22, .12);
+      color: #ea6c00
+    }
+
+    body.light .bp3 {
+      background: rgba(34, 197, 94, .12);
+      color: #16a34a
+    }
+
+    .bsp {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      background: rgba(251, 191, 36, .15);
+      color: var(--gold)
+    }
+
+    body.light .bsp {
+      background: rgba(180, 130, 0, .12);
+      color: #a07000
+    }
+
+    .cbtn {
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      color: var(--txt2);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s
+    }
+
+    .cbtn:hover {
+      background: var(--surf3);
+      color: var(--hi)
+    }
+
+    .mposts {
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .mpost {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px 12px 12px;
+      border-radius: 12px;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      border-left: 4px solid transparent;
+      transition: background .15s
+    }
+
+    .mpost:hover {
+      background: var(--surf3)
+    }
+
+    .mpost.hide {
+      display: none
+    }
+
+    .mpost[data-ch=instagram] {
+      border-left-color: var(--ig)
+    }
+
+    .mpost[data-ch=tiktok] {
+      border-left-color: var(--tt)
+    }
+
+    .mpost[data-ch=x] {
+      border-left-color: var(--xc)
+    }
+
+    .mpost[data-ch=whatsapp] {
+      border-left-color: var(--wa)
+    }
+
+    .pch-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+      width: 44px
+    }
+
+    .picon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px
+    }
+
+    .picon.instagram {
+      background: var(--ig-bg)
+    }
+
+    .picon.tiktok {
+      background: var(--tt-bg);
+      border: 1px solid #2a2a2a
+    }
+
+    .picon.x {
+      background: var(--xc-bg);
+      border: 1px solid #222
+    }
+
+    .picon.whatsapp {
+      background: var(--wa-bg)
+    }
+
+    .plbl {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      text-align: center
+    }
+
+    .plbl.instagram {
+      color: var(--ig)
+    }
+
+    .plbl.tiktok {
+      color: var(--tt)
+    }
+
+    .plbl.x {
+      color: var(--xc)
+    }
+
+    .plbl.whatsapp {
+      color: var(--wa)
+    }
+
+    .ptxt {
+      flex: 1;
+      min-width: 0
+    }
+
+    .ptype {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 4px
+    }
+
+    .ptype.instagram {
+      color: var(--ig)
+    }
+
+    .ptype.tiktok {
+      color: var(--tt)
+    }
+
+    .ptype.x {
+      color: var(--xc)
+    }
+
+    .ptype.whatsapp {
+      color: var(--wa)
+    }
+
+    .pdesc {
+      font-size: 13px;
+      color: var(--txt);
+      line-height: 1.5
+    }
+
+    .pnote {
+      font-size: 11px;
+      color: var(--txt3);
+      margin-top: 5px;
+      font-style: italic;
+      padding-top: 5px;
+      border-top: 1px solid var(--border)
+    }
+
+    /* ── POST FOOTER: status, utm, arte, aprovacao ── */
+    .pfoot {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px
+    }
+
+    .pstatus {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      letter-spacing: .3px
+    }
+
+    .paprov {
+      font-size: 11px;
+      color: var(--txt3);
+      margin-top: 6px
+    }
+
+    .paprov strong {
+      color: var(--txt2);
+      font-weight: 600
+    }
+
+    .pst-ideia {
+      background: rgba(150, 150, 160, .15);
+      color: #9898a6
+    }
+
+    .pst-producao {
+      background: rgba(249, 115, 22, .15);
+      color: #fdba74
+    }
+
+    .pst-aprovado {
+      background: rgba(34, 197, 94, .15);
+      color: #86efac
+    }
+
+    .pst-publicado {
+      background: rgba(29, 155, 240, .15);
+      color: #7dd3fc
+    }
+
+    body.light .pst-ideia {
+      background: rgba(150, 150, 160, .12);
+      color: #6b7280
+    }
+
+    body.light .pst-producao {
+      background: rgba(249, 115, 22, .12);
+      color: #ea6c00
+    }
+
+    body.light .pst-aprovado {
+      background: rgba(34, 197, 94, .12);
+      color: #16a34a
+    }
+
+    body.light .pst-publicado {
+      background: rgba(29, 155, 240, .12);
+      color: #0369a1
+    }
+
+    .parte-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 8px;
+      background: var(--surf3);
+      color: var(--txt2);
+      text-decoration: none;
+      border: 1px solid var(--border2);
+      letter-spacing: .3px;
+      transition: all .15s
+    }
+
+    .parte-btn:hover {
+      background: var(--border2);
+      color: var(--hi)
+    }
+
+    .mempty {
+      text-align: center;
+      padding: 30px;
+      color: var(--txt3);
+      font-size: 13px;
+      display: none
+    }
+
+    /* ── LOADING ── */
+    .loading-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 14px;
+      color: var(--txt3);
+      font-size: 14px
+    }
+
+    .loading-spin {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 3px solid var(--border2);
+      border-top-color: var(--red);
+      animation: spin .8s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .load-err {
+      color: var(--txt2);
+      font-size: 13px;
+      text-align: center;
+      max-width: 320px;
+      line-height: 1.6
+    }
+
+    .load-err a {
+      color: var(--red);
+      text-decoration: underline;
+      cursor: pointer
+    }
+
+    /* Mobile */
+    @media(max-width:640px) {
+      .cal {
+        padding: 10px
+      }
+
+      .dc {
+        min-height: 58px;
+        padding: 5px
+      }
+
+      .dc.blank {
+        min-height: 58px
+      }
+
+      .dnum {
+        font-size: 12px
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px
+      }
+
+      .dcount {
+        display: none
+      }
+
+      .star-lbl {
+        font-size: 8px
+      }
+
+      .mbig {
+        font-size: 36px
+      }
+
+      .modal {
+        max-width: 100%;
+        max-height: 88vh;
+        border-radius: 16px 16px 0 0
+      }
+
+      .backdrop {
+        align-items: flex-end;
+        padding: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-left">
+        <span class="logo">CazéTV</span>
+        <span style="color:var(--border2)">×</span>
+        <span>
+          <span class="htitle">Calendário de Posts</span>
+          <span class="hsub"> · Copa 2026 · 16 Jun – 19 Jul</span>
+        </span>
+      </div>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">
+        <span class="theme-icon" id="theme-icon">☀️</span>
+        <span id="theme-lbl">Modo claro</span>
+      </button>
+    </div>
+    <div class="filters">
+      <button class="fb on" data-ch="all" onclick="setFilter('all')"><span class="fdot fd-all"></span>Todos</button>
+      <button class="fb" data-ch="instagram" onclick="setFilter('instagram')"><span
+          class="fdot fd-ig"></span>Instagram</button>
+      <button class="fb" data-ch="tiktok" onclick="setFilter('tiktok')"><span class="fdot fd-tt"></span>TikTok</button>
+      <button class="fb" data-ch="x" onclick="setFilter('x')"><span class="fdot fd-x"></span>X (Twitter)</button>
+      <button class="fb" data-ch="whatsapp" onclick="setFilter('whatsapp')"><span
+          class="fdot fd-wa"></span>WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">Total: <strong id="s-total">—</strong></div>
+    <div class="stat"><span class="stat-dot" style="background:var(--ig)"></span>Instagram: <strong id="s-ig">—</strong>
+    </div>
+    <div class="stat"><span class="stat-dot" style="background:var(--tt)"></span>TikTok: <strong id="s-tt">—</strong>
+    </div>
+    <div class="stat"><span class="stat-dot" style="background:var(--xc)"></span>X: <strong id="s-x">—</strong></div>
+    <div class="stat"><span class="stat-dot" style="background:var(--wa)"></span>WhatsApp: <strong id="s-wa">—</strong>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-wrap" id="loading">
+    <div class="loading-spin"></div>
+    <span>Carregando calendário...</span>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="cal" id="cal-wrap" style="display:none">
+    <div id="june" class="month-block"></div>
+    <div id="july" class="month-block"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="backdrop" id="bd" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="mhdr">
+        <div class="mdate">
+          <div class="mbig" id="m-d"></div>
+          <div class="minfo">
+            <div class="mwd" id="m-wd"></div>
+            <div class="mmy" id="m-my"></div>
+            <div class="mbadges" id="m-badges"></div>
+          </div>
+        </div>
+        <button class="cbtn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="mposts" id="m-posts"></div>
+      <div class="mempty" id="m-empty">Nenhum post deste canal neste dia.</div>
+    </div>
+  </div>
+
+  <script>
+    // ── THEME ──────────────────────────────────────────────────
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light');
+      document.getElementById('theme-icon').textContent = isLight ? '🌙' : '☀️';
+      document.getElementById('theme-lbl').textContent = isLight ? 'Modo escuro' : 'Modo claro';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+    (function () {
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light');
+        document.getElementById('theme-icon').textContent = '🌙';
+        document.getElementById('theme-lbl').textContent = 'Modo escuro';
+      }
+    })();
+
+    // ── FONTE DE DADOS ─────────────────────────────────────────
+    // Cole aqui a URL gerada pelo Apps Script após o deploy:
+    // Extensões → Apps Script → Implantar → Nova implantação → Web app
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxEQ0l5QLh1OV-c1qBCn_ITGYcpTmMvPSm7tV8UV6FD59WcOabgoi0IkG0sZ4KJOP8mGQ/exec';
+
+    let CFG = {}, DATA = [];
+
+    // ── CONSTANTES ─────────────────────────────────────────────
+    const PN = { 1: "Entrada na Comunidade", 2: "Contagem Regressiva", 3: "O Novo Bolão" };
+    const PC = { 1: "#6366f1", 2: "#f97316", 3: "#22c55e" };
+    const WD = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const WDF = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const MF = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const CI = { instagram: "📷", tiktok: "♪", x: "𝕏", whatsapp: "💬" };
+    const CL = { instagram: "Instagram", tiktok: "TikTok", x: "X", whatsapp: "WhatsApp" };
+
+    // Mapeamento de status → classe CSS
+    const ST_CLS = {
+      'Ideia': 'pst-ideia', 'Em produção': 'pst-producao',
+      'Aprovado': 'pst-aprovado', 'Publicado': 'pst-publicado'
+    };
+
+    const TODAY = new Date().toISOString().slice(0, 10);
+    let filter = 'all', openDate = null;
+
+    // ── HELPERS ────────────────────────────────────────────────
+    function ds(y, m, d) { return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}` }
+    function postsFor(date, ch) { return DATA.filter(p => p.d === date && (ch === 'all' || p.c === ch)) }
+    function chsFor(date) { return [...new Set(DATA.filter(p => p.d === date).map(p => p.c))] }
+
+    // ── FILTROS ────────────────────────────────────────────────
+    function setFilter(ch) {
+      filter = ch;
+      document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+      document.querySelector(`[data-ch="${ch}"]`).classList.add('on');
+      refreshDots();
+      updateStats();
+      if (openDate) openModal(openDate);
+    }
+
+    function updateStats() {
+      const all = DATA.filter(p => CFG[p.d]);
+      const vis = filter === 'all' ? all : all.filter(p => p.c === filter);
+      document.getElementById('s-total').textContent = vis.length;
+      document.getElementById('s-ig').textContent = all.filter(p => p.c === 'instagram').length;
+      document.getElementById('s-tt').textContent = all.filter(p => p.c === 'tiktok').length;
+      document.getElementById('s-x').textContent = all.filter(p => p.c === 'x').length;
+      document.getElementById('s-wa').textContent = all.filter(p => p.c === 'whatsapp').length;
+    }
+
+    // ── CALENDÁRIO ─────────────────────────────────────────────
+    function buildMonth(y, m, id) {
+      const el = document.getElementById(id);
+      const first = new Date(y, m, 1).getDay();
+      const days = new Date(y, m + 1, 0).getDate();
+      const phases = new Set();
+      for (let i = 1; i <= days; i++) { const c = CFG[ds(y, m, i)]; if (c) phases.add(c.p) }
+      const phBar = [...phases].sort().map(p => `<div class="pb-item"><div class="pb-swatch" style="background:${PC[p]}"></div><span>${PN[p]}</span></div>`).join('');
+      el.innerHTML = `
+    <div class="month-title">${MF[m]} ${y}</div>
+    <div class="phase-bar">${phBar}</div>
+    <div class="wd-row">${WD.map(w => `<div class="wd">${w}</div>`).join('')}</div>
+    <div class="days" id="g-${id}"></div>`;
+      const grid = el.querySelector('.days');
+      for (let i = 0; i < first; i++) { const b = document.createElement('div'); b.className = 'dc blank'; grid.appendChild(b) }
+      for (let d = 1; d <= days; d++) {
+        const date = ds(y, m, d);
+        const cfg = CFG[date];
+        const cell = document.createElement('div');
+        if (!cfg) {
+          cell.className = 'dc off';
+          cell.innerHTML = `<span class="dnum">${d}</span>`;
+        } else {
+          const chs = chsFor(date);
+          const total = DATA.filter(p => p.d === date).length;
+          const cls = ['dc', 'on', `p${cfg.p}`];
+          if (cfg.s) cls.push('spec');
+          if (date === TODAY) cls.push('today');
+          cell.className = cls.join(' ');
+          cell.dataset.date = date;
+          cell.innerHTML = `
+        <span class="dnum">${d}</span>
+        ${cfg.s ? `<span class="star-lbl">★</span>` : ''}
+        <div class="dots-area">
+          <div class="dots" id="dots-${date}">${chs.map(ch => `<span class="dot dot-${ch}" data-ch="${ch}" title="${CL[ch]}"></span>`).join('')}</div>
+          <div class="dcount" id="cnt-${date}">${total} post${total !== 1 ? 's' : ''}</div>
+        </div>`;
+          cell.addEventListener('click', () => openModal(date));
+        }
+        grid.appendChild(cell);
+      }
+    }
+
+    function refreshDots() {
+      Object.keys(CFG).forEach(date => {
+        const dotsEl = document.getElementById(`dots-${date}`);
+        const cntEl = document.getElementById(`cnt-${date}`);
+        const cell = dotsEl?.closest('.dc');
+        if (!dotsEl) return;
+        dotsEl.querySelectorAll('.dot').forEach(dot => {
+          dot.classList.toggle('faded', filter !== 'all' && dot.dataset.ch !== filter);
+        });
+        const vis = postsFor(date, filter).length;
+        const tot = DATA.filter(p => p.d === date).length;
+        if (cntEl) cntEl.textContent = filter === 'all' ? `${tot} post${tot !== 1 ? 's' : ''}` : (vis > 0 ? `${vis} post${vis !== 1 ? 's' : ''}` : '—');
+        if (cell) cell.style.opacity = (vis > 0 || filter === 'all') ? '1' : '0.3';
+      });
+    }
+
+    // ── MODAL ──────────────────────────────────────────────────
+    function openModal(date) {
+      openDate = date;
+      const cfg = CFG[date];
+      const dt = new Date(date + 'T12:00:00');
+      document.getElementById('m-d').textContent = dt.getDate();
+      document.getElementById('m-wd').textContent = WDF[dt.getDay()];
+      document.getElementById('m-my').textContent = `${MF[dt.getMonth()]} ${dt.getFullYear()}`;
+      const bpc = { 1: 'bp1', 2: 'bp2', 3: 'bp3' };
+      document.getElementById('m-badges').innerHTML =
+        `<span class="bph ${bpc[cfg.p]}">${PN[cfg.p]}</span>` +
+        (cfg.s ? `<span class="bsp">${cfg.s}</span>` : '');
+      const allPosts = DATA.filter(p => p.d === date);
+      const vis = postsFor(date, filter);
+      document.getElementById('m-posts').innerHTML = allPosts.map(p => {
+        const show = filter === 'all' || p.c === filter;
+        const stCls = ST_CLS[p.status] || '';
+        const hasFooter = p.status || p.utm || p.arte;
+        return `<div class="mpost${show ? '' : ' hide'}" data-ch="${p.c}">
+      <div class="pch-wrap">
+        <div class="picon ${p.c}">${CI[p.c]}</div>
+        <span class="plbl ${p.c}">${CL[p.c]}</span>
+      </div>
+      <div class="ptxt">
+        <div class="ptype ${p.c}">${p.t}</div>
+        ${p.tx ? `<div class="pdesc">${p.tx}</div>` : ''}
+        ${p.aprov ? `<div class="paprov"><strong>Aprovação:</strong> ${p.aprov}</div>` : ''}
+        ${hasFooter ? `<div class="pfoot">
+          ${p.status && stCls ? `<span class="pstatus ${stCls}">${p.status}</span>` : ''}
+          ${p.utm ? `<a class="parte-btn" href="${p.utm}" target="_blank" rel="noopener">Link CTA ↗</a>` : ''}
+          ${p.arte ? `<a class="parte-btn" href="${p.arte}" target="_blank" rel="noopener">Ver arte ↗</a>` : ''}
+        </div>`: ''}
+      </div>
+    </div>`;
+      }).join('');
+      document.getElementById('m-empty').style.display = vis.length === 0 ? 'block' : 'none';
+      document.getElementById('bd').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      openDate = null;
+      document.getElementById('bd').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
+
+    // ── INIT: busca dados do Google Sheets ─────────────────────
+    async function init() {
+      try {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        CFG = json.cfg;
+        DATA = json.posts.map(p => ({
+          d: p.data, c: p.canal, t: p.formato,
+          utm: p.utm || undefined,
+          arte: p.link_arte || undefined,
+          tx: p.comunicacao || undefined,
+          aprov: p.aprovacao || undefined,
+          status: p.status || undefined
+        }));
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('cal-wrap').style.display = 'block';
+        buildMonth(2026, 5, 'june');
+        buildMonth(2026, 6, 'july');
+        updateStats();
+      } catch (e) {
+        const el = document.getElementById('loading');
+        el.innerHTML = `<div class="load-err">
+      Não foi possível carregar os dados.<br>
+      Verifique se a URL do Apps Script está configurada no HTML e recarregue.<br><br>
+      <a onclick="location.reload()">Tentar novamente</a>
+    </div>`;
+      }
+    }
+    init();
+  </script>
+</body>
+
+</html>
