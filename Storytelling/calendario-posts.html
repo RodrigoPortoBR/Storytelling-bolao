@@ -796,7 +796,7 @@
     .parte-btn {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       font-size: 11px;
       font-weight: 700;
       padding: 5px 12px;
@@ -806,6 +806,8 @@
       text-decoration: none;
       border: 1px solid var(--border2);
       letter-spacing: .3px;
+      cursor: pointer;
+      font-family: inherit;
       transition: all .15s
     }
 
@@ -813,6 +815,16 @@
       background: rgba(255, 184, 0, .1);
       border-color: var(--gold);
       color: var(--hi)
+    }
+
+    .parte-btn.utm .copy-ico {
+      flex-shrink: 0
+    }
+
+    .parte-btn.utm.copied {
+      background: rgba(0, 212, 106, .15);
+      border-color: var(--green);
+      color: var(--green)
     }
 
     .parte-btn.arte {
@@ -1151,7 +1163,10 @@
         ${p.tx ? `<div class="pdesc">${p.tx}</div>` : ''}
         ${p.aprov ? `<div class="paprov">Aprovação: <strong>${p.aprov}</strong></div>` : ''}
         ${hasLinks ? `<div class="pfoot">
-          ${p.utm ? `<a class="parte-btn utm" href="${p.utm}" target="_blank" rel="noopener">UTM ↗</a>` : ''}
+          ${p.utm ? `<button class="parte-btn utm" type="button" data-utm="${p.utm}" title="Copiar link UTM">
+            <svg class="copy-ico" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            UTM
+          </button>` : ''}
           ${p.arte ? `<a class="parte-btn arte" href="${p.arte}" target="_blank" rel="noopener">Ver arte ↗</a>` : ''}
         </div>`: ''}
       </div>
@@ -1171,6 +1186,34 @@
       if (!e.target.closest('#panel')) closeModal();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() });
+
+    // ── COPIAR LINK UTM ────────────────────────────────────────
+    document.getElementById('m-posts').addEventListener('click', async e => {
+      const btn = e.target.closest('.parte-btn.utm');
+      if (!btn) return;
+      const url = btn.dataset.utm;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      if (btn.dataset.resetTimer) clearTimeout(Number(btn.dataset.resetTimer));
+      const original = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '✓ Copiado!';
+      const t = setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = original;
+      }, 1600);
+      btn.dataset.resetTimer = t;
+    });
 
     // ── INIT: busca dados do Google Sheets ─────────────────────
     async function init() {
