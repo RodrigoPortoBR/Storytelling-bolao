@@ -430,7 +430,7 @@
       right: 0;
       top: 0;
       bottom: 0;
-      width: 420px;
+      width: 460px;
       background: var(--surf);
       border-left: 1px solid var(--border);
       box-shadow: -8px 0 32px rgba(0,0,0,.35);
@@ -562,17 +562,18 @@
 
     .mpost {
       display: flex;
-      gap: 12px;
-      padding: 12px 14px 12px 12px;
-      border-radius: var(--r);
+      gap: 14px;
+      padding: 14px;
+      border-radius: var(--r-lg);
       background: var(--surf2);
       border: 1px solid var(--border);
-      border-left: 4px solid transparent;
-      transition: background .15s
+      border-left: 5px solid transparent;
+      transition: background .15s, border-color .15s, transform .15s
     }
 
     .mpost:hover {
-      background: var(--surf3)
+      background: var(--surf3);
+      transform: translateX(2px)
     }
 
     .mpost.hide {
@@ -595,23 +596,49 @@
       border-left-color: var(--wa)
     }
 
-    .pch-wrap {
+    /* ── Trilha do canal (ícone + nome em destaque) ── */
+    .mpost-rail {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      justify-content: center;
+      gap: 7px;
       flex-shrink: 0;
-      width: 44px
+      width: 68px;
+      padding: 10px 4px;
+      border-radius: var(--r);
+    }
+
+    .mpost[data-ch=instagram] .mpost-rail {
+      background: rgba(214, 52, 128, .14)
+    }
+
+    .mpost[data-ch=tiktok] .mpost-rail {
+      background: rgba(91, 207, 220, .12)
+    }
+
+    .mpost[data-ch=x] .mpost-rail {
+      background: rgba(255, 255, 255, .08)
+    }
+
+    .mpost[data-ch=whatsapp] .mpost-rail {
+      background: rgba(37, 211, 102, .14)
     }
 
     .picon {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 46px;
+      height: 46px;
+      border-radius: var(--r);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+      flex-shrink: 0
+    }
+
+    .picon svg {
+      width: 24px;
+      height: 24px
     }
 
     .picon.instagram {
@@ -633,10 +660,10 @@
     }
 
     .plbl {
-      font-size: 9px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: .3px;
+      letter-spacing: .4px;
       text-align: center
     }
 
@@ -649,7 +676,7 @@
     }
 
     .plbl.x {
-      color: var(--xc)
+      color: var(--hi)
     }
 
     .plbl.whatsapp {
@@ -658,35 +685,53 @@
 
     .ptxt {
       flex: 1;
-      min-width: 0
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
     }
 
-    .ptype {
-      font-size: 10px;
+    /* ── Topo do corpo: badge de tipo + badge de status, lado a lado ── */
+    .mpost-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .ptype-badge {
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 4px
+      letter-spacing: .4px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      flex-shrink: 0
     }
 
-    .ptype.instagram {
-      color: var(--ig)
+    .ptype-badge.instagram {
+      background: rgba(214, 52, 128, .18);
+      color: #ff7fbb
     }
 
-    .ptype.tiktok {
+    .ptype-badge.tiktok {
+      background: rgba(91, 207, 220, .16);
       color: var(--tt)
     }
 
-    .ptype.x {
-      color: var(--xc)
+    .ptype-badge.x {
+      background: #fff;
+      color: #000
     }
 
-    .ptype.whatsapp {
+    .ptype-badge.whatsapp {
+      background: rgba(37, 211, 102, .16);
       color: var(--wa)
     }
 
     .pdesc {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--txt);
       line-height: 1.5
     }
@@ -700,27 +745,27 @@
       border-top: 1px solid var(--border)
     }
 
-    /* ── POST FOOTER: status, utm, arte, aprovacao ── */
+    /* ── POST FOOTER: utm, arte ── */
     .pfoot {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 8px
+      gap: 8px;
+      margin-top: 2px
     }
 
     .pstatus {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 4px 11px;
       border-radius: 9999px;
-      letter-spacing: .3px
+      letter-spacing: .3px;
+      flex-shrink: 0
     }
 
     .paprov {
-      font-size: 11px;
-      color: var(--txt3);
-      margin-top: 6px
+      font-size: 12px;
+      color: var(--txt3)
     }
 
     .paprov strong {
@@ -751,11 +796,11 @@
     .parte-btn {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      font-size: 10px;
+      gap: 4px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 2px 9px;
-      border-radius: 8px;
+      padding: 5px 12px;
+      border-radius: var(--r);
       background: transparent;
       color: var(--txt2);
       text-decoration: none;
@@ -764,10 +809,22 @@
       transition: all .15s
     }
 
-    .parte-btn:hover {
-      background: rgba(255, 184, 0, .08);
+    .parte-btn.utm:hover {
+      background: rgba(255, 184, 0, .1);
       border-color: var(--gold);
       color: var(--hi)
+    }
+
+    .parte-btn.arte {
+      background: rgba(255, 92, 0, .12);
+      border-color: rgba(255, 92, 0, .35);
+      color: var(--orange)
+    }
+
+    .parte-btn.arte:hover {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff
     }
 
     .mempty {
@@ -962,7 +1019,12 @@
     const WD = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
     const WDF = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     const MF = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const CI = { instagram: "📷", tiktok: "♪", x: "𝕏", whatsapp: "💬" };
+    const CI = {
+      instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.15" fill="#fff" stroke="none"/></svg>`,
+      tiktok: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M16.6 5.82a4.28 4.28 0 0 1-3.78-3.77h-3.07v13.66a2.6 2.6 0 1 1-1.83-2.48v-3.1a5.65 5.65 0 1 0 4.9 5.6V9.4a7.34 7.34 0 0 0 4.28 1.36V7.62a4.85 4.85 0 0 1-.5-1.8z"/></svg>`,
+      x: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M18.9 3H22l-7.2 8.2L22.6 21H16l-5-6.1L5 21H2l7.7-8.8L1.7 3H8.4l4.5 5.6L18.9 3z"/></svg>`,
+      whatsapp: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.3.8-1.6 1.5-2.5 1.6-.7.1-1.4 0-2.7-.5-2.3-.9-3.8-3.2-3.9-3.3-.1-.2-1-1.3-1-2.5s.6-1.8.8-2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5.2.5.7 1.7.7 1.8.1.1.1.3 0 .4-.3.6-.6.9-.8 1.2-.1.1-.2.3 0 .5.5.9 1.1 1.6 1.9 2.1.3.2.5.2.7 0 .3-.3.7-.8 1-1.2.2-.3.4-.3.7-.2l1.6.8c.2.1.4.2.4.4.1.2.1.7-.2 1.5z"/></svg>`
+    };
     const CL = { instagram: "Instagram", tiktok: "TikTok", x: "X", whatsapp: "WhatsApp" };
 
     // Mapeamento de status → classe CSS
@@ -1075,20 +1137,22 @@
       document.getElementById('m-posts').innerHTML = allPosts.map(p => {
         const show = filter === 'all' || p.c === filter;
         const stCls = ST_CLS[p.status] || '';
-        const hasFooter = p.status || p.utm || p.arte;
+        const hasLinks = p.utm || p.arte;
         return `<div class="mpost${show ? '' : ' hide'}" data-ch="${p.c}">
-      <div class="pch-wrap">
+      <div class="mpost-rail">
         <div class="picon ${p.c}">${CI[p.c]}</div>
         <span class="plbl ${p.c}">${CL[p.c]}</span>
       </div>
       <div class="ptxt">
-        <div class="ptype ${p.c}">${p.t}</div>
-        ${p.tx ? `<div class="pdesc">${p.tx}</div>` : ''}
-        ${p.aprov ? `<div class="paprov"><strong>Aprovação:</strong> ${p.aprov}</div>` : ''}
-        ${hasFooter ? `<div class="pfoot">
+        <div class="mpost-top">
+          <span class="ptype-badge ${p.c}">${p.t}</span>
           ${p.status && stCls ? `<span class="pstatus ${stCls}">${p.status}</span>` : ''}
-          ${p.utm ? `<a class="parte-btn" href="${p.utm}" target="_blank" rel="noopener">Link CTA ↗</a>` : ''}
-          ${p.arte ? `<a class="parte-btn" href="${p.arte}" target="_blank" rel="noopener">Ver arte ↗</a>` : ''}
+        </div>
+        ${p.tx ? `<div class="pdesc">${p.tx}</div>` : ''}
+        ${p.aprov ? `<div class="paprov">Aprovação: <strong>${p.aprov}</strong></div>` : ''}
+        ${hasLinks ? `<div class="pfoot">
+          ${p.utm ? `<a class="parte-btn utm" href="${p.utm}" target="_blank" rel="noopener">UTM ↗</a>` : ''}
+          ${p.arte ? `<a class="parte-btn arte" href="${p.arte}" target="_blank" rel="noopener">Ver arte ↗</a>` : ''}
         </div>`: ''}
       </div>
     </div>`;
