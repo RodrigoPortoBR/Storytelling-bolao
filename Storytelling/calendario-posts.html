@@ -683,6 +683,42 @@
       color: var(--wa)
     }
 
+    /* ── Horário sugerido: destaque + alerta de urgência ── */
+    .ptime-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      background: rgba(255, 184, 0, .15);
+      color: var(--gold);
+      white-space: nowrap
+    }
+
+    .ptime-badge.soon {
+      background: rgba(255, 92, 0, .22);
+      color: var(--orange);
+      animation: pulse-alert 1.4s ease-in-out infinite
+    }
+
+    .ptime-badge.due {
+      background: var(--red);
+      color: #fff;
+      animation: pulse-alert 1.1s ease-in-out infinite
+    }
+
+    @keyframes pulse-alert {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .55
+      }
+    }
+
     .ptxt {
       flex: 1;
       min-width: 0;
@@ -1045,8 +1081,48 @@
       'Aprovado': 'pst-aprovado', 'Publicado': 'pst-publicado'
     };
 
-    const TODAY = new Date().toISOString().slice(0, 10);
+    // ── BRT (horário de Brasília) ───────────────────────────────
+    // Todo "horário sugerido" é em BRT, então comparamos com a hora
+    // atual em BRT (e não no fuso de quem está com a página aberta).
+    const BRT_TZ = 'America/Sao_Paulo';
+    function brtParts(date = new Date()) {
+      const parts = {};
+      new Intl.DateTimeFormat('en-CA', {
+        timeZone: BRT_TZ, year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      }).formatToParts(date).forEach(p => { if (p.type !== 'literal') parts[p.type] = p.value; });
+      return parts;
+    }
+    function brtDateKey(date) { const p = brtParts(date); return `${p.year}-${p.month}-${p.day}`; }
+    function brtNowMinutes() { const p = brtParts(); return Number(p.hour) * 60 + Number(p.minute); }
+
+    const TODAY = brtDateKey();
     let filter = 'all', openDate = null;
+
+    // ── HORÁRIO SUGERIDO: classifica urgência pra alertar o time ──
+    function classifyTime(dateKey, hhmm, status) {
+      if (!hhmm) return null;
+      if (status === 'Publicado' || dateKey !== TODAY) {
+        return { cls: '', label: `🕒 ${hhmm}` };
+      }
+      const [h, m] = hhmm.split(':').map(Number);
+      const diff = (h * 60 + m) - brtNowMinutes();
+      if (diff > 30) return { cls: '', label: `🕒 ${hhmm}`, title: 'Horário sugerido' };
+      if (diff > 0) return { cls: 'soon', label: `⏰ ${hhmm}`, title: `Daqui a ${diff}min — prepare o post` };
+      if (diff > -60) return { cls: 'due', label: `🔴 ${hhmm}`, title: 'Hora de subir o post!' };
+      return { cls: 'due', label: `⚠️ ${hhmm}`, title: 'Atrasado — horário sugerido já passou' };
+    }
+
+    function refreshTimeBadges() {
+      document.querySelectorAll('.ptime-badge').forEach(el => {
+        const info = classifyTime(el.dataset.date, el.dataset.time, el.dataset.status);
+        if (!info) return;
+        el.className = 'ptime-badge' + (info.cls ? ' ' + info.cls : '');
+        el.textContent = info.label;
+        el.title = info.title;
+      });
+    }
+    setInterval(refreshTimeBadges, 30000);
 
     // ── HELPERS ────────────────────────────────────────────────
     function ds(y, m, d) { return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}` }
@@ -1150,10 +1226,12 @@
         const show = filter === 'all' || p.c === filter;
         const stCls = ST_CLS[p.status] || '';
         const hasLinks = p.utm || p.arte;
+        const timeInfo = classifyTime(p.d, p.horario, p.status);
         return `<div class="mpost${show ? '' : ' hide'}" data-ch="${p.c}">
       <div class="mpost-rail">
         <div class="picon ${p.c}">${CI[p.c]}</div>
         <span class="plbl ${p.c}">${CL[p.c]}</span>
+        ${timeInfo ? `<div class="ptime-badge${timeInfo.cls ? ' ' + timeInfo.cls : ''}" data-date="${p.d}" data-time="${p.horario}" data-status="${p.status || ''}" title="${timeInfo.title}">${timeInfo.label}</div>` : ''}
       </div>
       <div class="ptxt">
         <div class="mpost-top">
@@ -1242,7 +1320,8 @@
           arte: p.link_arte || undefined,
           tx: p.comunicacao || undefined,
           aprov: p.aprovacao || undefined,
-          status: p.status || undefined
+          status: p.status || undefined,
+          horario: p.horario_sugerido || undefined
         }));
         document.getElementById('loading').style.display = 'none';
         document.getElementById('cal-wrap').style.display = 'block';
