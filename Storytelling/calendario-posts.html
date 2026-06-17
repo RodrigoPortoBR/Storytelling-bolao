@@ -190,30 +190,132 @@
       background: var(--wa)
     }
 
-    /* ── STATS ── */
-    .stats {
+    /* ── WIDGETS (big numbers: publicados / planejados) ── */
+    .widgets {
       background: var(--surf2);
       border-bottom: 1px solid var(--border);
-      padding: 7px 20px;
+      padding: 14px 20px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr;
+      gap: 10px
+    }
+
+    .widget {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 12px 14px;
       display: flex;
-      gap: 18px;
-      font-size: 11px;
+      align-items: center;
+      gap: 10px;
+      min-width: 0
+    }
+
+    .widget[data-ch=instagram] {
+      border-left: 3px solid var(--ig)
+    }
+
+    .widget[data-ch=tiktok] {
+      border-left: 3px solid var(--tt)
+    }
+
+    .widget[data-ch=x] {
+      border-left: 3px solid var(--xc)
+    }
+
+    .widget[data-ch=whatsapp] {
+      border-left: 3px solid var(--wa)
+    }
+
+    .widget.w-overall {
+      background: linear-gradient(135deg, rgba(255, 92, 0, .16), rgba(255, 184, 0, .1));
+      border-color: rgba(255, 184, 0, .3);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px
+    }
+
+    .w-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .w-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
       color: var(--txt3);
-      flex-wrap: wrap;
-      transition: background .25s
+      white-space: nowrap
     }
 
-    .stat strong {
-      color: var(--txt2)
+    .w-big {
+      font-size: 23px;
+      font-weight: 800;
+      color: var(--hi);
+      line-height: 1;
+      letter-spacing: -.5px
     }
 
-    .stat-dot {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      margin-right: 4px;
-      vertical-align: middle
+    .w-big .w-sep {
+      color: var(--txt4);
+      font-weight: 600;
+      margin: 0 2px;
+      font-size: 16px
+    }
+
+    .w-big .w-all {
+      color: var(--txt3);
+      font-size: 15px;
+      font-weight: 700
+    }
+
+    .w-sub {
+      font-size: 10px;
+      color: var(--txt3)
+    }
+
+    .w-bar {
+      width: 100%;
+      height: 4px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, .08);
+      overflow: hidden;
+      margin-top: 3px;
+      flex-shrink: 0
+    }
+
+    .w-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+      width: 0%;
+      transition: width .5s ease
+    }
+
+    .picon.sm {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, .35)
+    }
+
+    .picon.sm svg {
+      width: 18px;
+      height: 18px
+    }
+
+    @media(max-width:900px) {
+      .widgets {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .widget.w-overall {
+        grid-column: 1 / -1
+      }
     }
 
     /* ── CALENDAR ── */
@@ -926,6 +1028,21 @@
 
     /* Mobile */
     @media(max-width:640px) {
+      .widgets {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 10px;
+        gap: 8px
+      }
+
+      .widget {
+        padding: 10px;
+        gap: 8px
+      }
+
+      .w-big {
+        font-size: 19px
+      }
+
       .cal {
         padding: 10px
       }
@@ -1010,15 +1127,45 @@
     </div>
   </div>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat">Total: <strong id="s-total">—</strong></div>
-    <div class="stat"><span class="stat-dot" style="background:var(--ig)"></span>Instagram: <strong id="s-ig">—</strong>
+  <!-- WIDGETS -->
+  <div class="widgets" id="widgets">
+    <div class="widget w-overall">
+      <div class="w-label">Total do calendário</div>
+      <div class="w-big"><span id="w-total-done">0</span><span class="w-sep">/</span><span class="w-all" id="w-total-all">0</span></div>
+      <div class="w-sub">publicados / planejados</div>
+      <div class="w-bar"><div class="w-bar-fill" id="w-total-fill" style="background:linear-gradient(90deg,var(--orange),var(--gold))"></div></div>
     </div>
-    <div class="stat"><span class="stat-dot" style="background:var(--tt)"></span>TikTok: <strong id="s-tt">—</strong>
+    <div class="widget" data-ch="instagram">
+      <div class="picon sm instagram" data-icon="instagram"></div>
+      <div class="w-body">
+        <div class="w-label">Instagram</div>
+        <div class="w-big"><span id="w-ig-done">0</span><span class="w-sep">/</span><span class="w-all" id="w-ig-all">0</span></div>
+        <div class="w-bar"><div class="w-bar-fill" id="w-ig-fill" style="background:var(--ig)"></div></div>
+      </div>
     </div>
-    <div class="stat"><span class="stat-dot" style="background:var(--xc)"></span>X: <strong id="s-x">—</strong></div>
-    <div class="stat"><span class="stat-dot" style="background:var(--wa)"></span>WhatsApp: <strong id="s-wa">—</strong>
+    <div class="widget" data-ch="tiktok">
+      <div class="picon sm tiktok" data-icon="tiktok"></div>
+      <div class="w-body">
+        <div class="w-label">TikTok</div>
+        <div class="w-big"><span id="w-tt-done">0</span><span class="w-sep">/</span><span class="w-all" id="w-tt-all">0</span></div>
+        <div class="w-bar"><div class="w-bar-fill" id="w-tt-fill" style="background:var(--tt)"></div></div>
+      </div>
+    </div>
+    <div class="widget" data-ch="x">
+      <div class="picon sm x" data-icon="x"></div>
+      <div class="w-body">
+        <div class="w-label">X</div>
+        <div class="w-big"><span id="w-x-done">0</span><span class="w-sep">/</span><span class="w-all" id="w-x-all">0</span></div>
+        <div class="w-bar"><div class="w-bar-fill" id="w-x-fill" style="background:var(--xc)"></div></div>
+      </div>
+    </div>
+    <div class="widget" data-ch="whatsapp">
+      <div class="picon sm whatsapp" data-icon="whatsapp"></div>
+      <div class="w-body">
+        <div class="w-label">WhatsApp</div>
+        <div class="w-big"><span id="w-wa-done">0</span><span class="w-sep">/</span><span class="w-all" id="w-wa-all">0</span></div>
+        <div class="w-bar"><div class="w-bar-fill" id="w-wa-fill" style="background:var(--wa)"></div></div>
+      </div>
     </div>
   </div>
 
@@ -1074,6 +1221,7 @@
       whatsapp: `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.3.8-1.6 1.5-2.5 1.6-.7.1-1.4 0-2.7-.5-2.3-.9-3.8-3.2-3.9-3.3-.1-.2-1-1.3-1-2.5s.6-1.8.8-2c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5.2.5.7 1.7.7 1.8.1.1.1.3 0 .4-.3.6-.6.9-.8 1.2-.1.1-.2.3 0 .5.5.9 1.1 1.6 1.9 2.1.3.2.5.2.7 0 .3-.3.7-.8 1-1.2.2-.3.4-.3.7-.2l1.6.8c.2.1.4.2.4.4.1.2.1.7-.2 1.5z"/></svg>`
     };
     const CL = { instagram: "Instagram", tiktok: "TikTok", x: "X", whatsapp: "WhatsApp" };
+    document.querySelectorAll('.picon.sm[data-icon]').forEach(el => { el.innerHTML = CI[el.dataset.icon]; });
 
     // Mapeamento de status → classe CSS
     const ST_CLS = {
@@ -1139,14 +1287,22 @@
       if (openDate) openModal(openDate);
     }
 
+    function setWidget(prefix, total, done) {
+      document.getElementById(`w-${prefix}-done`).textContent = done;
+      document.getElementById(`w-${prefix}-all`).textContent = total;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById(`w-${prefix}-fill`).style.width = `${pct}%`;
+    }
+
     function updateStats() {
       const all = DATA.filter(p => CFG[p.d]);
-      const vis = filter === 'all' ? all : all.filter(p => p.c === filter);
-      document.getElementById('s-total').textContent = vis.length;
-      document.getElementById('s-ig').textContent = all.filter(p => p.c === 'instagram').length;
-      document.getElementById('s-tt').textContent = all.filter(p => p.c === 'tiktok').length;
-      document.getElementById('s-x').textContent = all.filter(p => p.c === 'x').length;
-      document.getElementById('s-wa').textContent = all.filter(p => p.c === 'whatsapp').length;
+      const done = p => p.status === 'Publicado';
+      setWidget('total', all.length, all.filter(done).length);
+      ['ig:instagram', 'tt:tiktok', 'x:x', 'wa:whatsapp'].forEach(pair => {
+        const [prefix, ch] = pair.split(':');
+        const chPosts = all.filter(p => p.c === ch);
+        setWidget(prefix, chPosts.length, chPosts.filter(done).length);
+      });
     }
 
     // ── CALENDÁRIO ─────────────────────────────────────────────
