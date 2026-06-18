@@ -1226,8 +1226,11 @@
     // Mapeamento de status → classe CSS
     const ST_CLS = {
       'Ideia': 'pst-ideia', 'Em produção': 'pst-producao',
-      'Aprovado': 'pst-aprovado', 'Publicado': 'pst-publicado'
+      'Aprovado': 'pst-aprovado', 'Postado': 'pst-publicado'
     };
+    // "Postado" é o valor que o time marca na planilha quando o post já subiu.
+    // Comparação tolerante a caixa/espaços pra não depender de digitação exata.
+    function isPosted(status) { return !!status && status.trim().toLowerCase() === 'postado'; }
 
     // ── BRT (horário de Brasília) ───────────────────────────────
     // Todo "horário sugerido" é em BRT, então comparamos com a hora
@@ -1250,7 +1253,7 @@
     // ── HORÁRIO SUGERIDO: classifica urgência pra alertar o time ──
     function classifyTime(dateKey, hhmm, status) {
       if (!hhmm) return null;
-      if (status === 'Publicado' || dateKey !== TODAY) {
+      if (isPosted(status) || dateKey !== TODAY) {
         return { cls: '', label: `🕒 ${hhmm}` };
       }
       const [h, m] = hhmm.split(':').map(Number);
@@ -1296,7 +1299,7 @@
 
     function updateStats() {
       const all = DATA.filter(p => CFG[p.d]);
-      const done = p => p.status === 'Publicado';
+      const done = p => isPosted(p.status);
       setWidget('total', all.length, all.filter(done).length);
       ['ig:instagram', 'tt:tiktok', 'x:x', 'wa:whatsapp'].forEach(pair => {
         const [prefix, ch] = pair.split(':');
