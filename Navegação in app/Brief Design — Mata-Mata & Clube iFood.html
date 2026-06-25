@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief Design — Mata-Mata & Clube iFood</title>
+<style>
+  :root {
+    --ifood-red: #EA1D2C;
+    --ifood-orange: #FF6900;
+    --ifood-yellow: #FFC244;
+    --ifood-blue: #3B4FE4;
+    --ifood-green: #A8E63D;
+    --text: #1A1A1A;
+    --muted: #666;
+    --border: #E5E7EB;
+    --bg-light: #F9FAFB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text);
+    background: #F0F2F5;
+    padding: 32px 16px;
+    line-height: 1.6;
+  }
+
+  .doc {
+    max-width: 820px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  /* Header */
+  .doc-header {
+    background: linear-gradient(135deg, var(--ifood-red), var(--ifood-orange));
+    color: white;
+    padding: 40px 40px 32px;
+  }
+  .doc-header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    margin-bottom: 10px;
+  }
+  .doc-header .objective {
+    font-size: 14px;
+    opacity: 0.92;
+    max-width: 580px;
+    line-height: 1.5;
+  }
+  .doc-header .objective strong {
+    color: var(--ifood-yellow);
+  }
+  .doc-header .meta {
+    margin-top: 20px;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  /* Content */
+  .doc-body { padding: 40px; }
+
+  /* Priority bar */
+  .priority-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .priority-card {
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .priority-card.alta { background: #FFF3F3; border-left: 4px solid var(--ifood-red); }
+  .priority-card.media { background: #FFF8EC; border-left: 4px solid var(--ifood-yellow); }
+  .priority-card.baixa { background: #F3F6FF; border-left: 4px solid var(--ifood-blue); }
+  .priority-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .alta .priority-badge { background: var(--ifood-red); color: white; }
+  .media .priority-badge { background: var(--ifood-yellow); color: #6B4700; }
+  .baixa .priority-badge { background: var(--ifood-blue); color: white; }
+  .priority-card .info { flex: 1; }
+  .priority-card .tela-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .priority-card .tela-desc { font-size: 12px; color: var(--muted); }
+
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg-light);
+  }
+  .section-number {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--ifood-blue);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 16px; font-weight: 700; }
+  .section-header .ref {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    background: white;
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .section-body { padding: 24px; }
+
+  .problem-box {
+    background: #FFF8EC;
+    border: 1px solid #FFE08A;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #6B4700;
+    margin-bottom: 20px;
+  }
+  .problem-box strong { color: #EA1D2C; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  th {
+    background: var(--ifood-blue);
+    color: white;
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg-light); }
+  td .atual { color: var(--muted); }
+  td .proposto { color: var(--ifood-red); font-weight: 600; }
+
+  /* Wireframe */
+  .wireframe-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .wireframe {
+    background: #1E1E2E;
+    color: #A8E63D;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 20px 24px;
+    border-radius: 10px;
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 16px;
+  }
+
+  /* Sub-label */
+  h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--ifood-blue);
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+  h3:first-child { margin-top: 0; }
+
+  /* Rule list */
+  ul { padding-left: 18px; font-size: 14px; margin-bottom: 16px; }
+  ul li { margin-bottom: 6px; }
+  ul li strong { color: var(--ifood-red); }
+
+  /* Mobile mockup side-by-side */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  /* Visual spec pill */
+  .spec-pill {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin: 3px 3px 3px 0;
+  }
+  .spec-pill.color { background: #F3F4F6; color: var(--text); border: 1px solid var(--border); }
+
+  .color-swatch {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 5px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  /* Keep note */
+  .keep-box {
+    background: #F0FFF4;
+    border: 1px solid #86EFAC;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .keep-box strong { color: #166534; }
+
+  /* Visual note */
+  .visual-note {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 8px;
+  }
+
+  /* CTA example */
+  .cta-example {
+    display: inline-block;
+    background: var(--ifood-red);
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+    margin: 8px 0;
+  }
+  .cta-example.white { background: white; color: var(--ifood-red); border: 2px solid var(--ifood-red); }
+  .cta-example.green { background: var(--ifood-green); color: #1A3A00; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* Parts */
+  .part {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .part-header {
+    background: var(--bg-light);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .part-body { padding: 16px; }
+
+  /* Footer */
+  .doc-footer {
+    background: var(--bg-light);
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <h1>Brief Design — Comunicação Mata-Mata & Conversão Clube iFood</h1>
+    <p class="objective">
+      Converter usuários não-assinantes em Clube iFood aproveitando 4 pontos de contato no app.
+      O gatilho central é o Ranking Mata-Mata que abre em 28/06 com prêmio de
+      <strong>R$1 milhão</strong> para o 1º colocado Clube iFood.
+    </p>
+    <p class="meta">Preparado em 25/06/2026 · Copa do Mundo FIFA 2026</p>
+  </div>
+
+  <div class="doc-body">
+
+    <!-- Priority summary -->
+    <div class="priority-bar">
+      <div class="priority-card alta">
+        <span class="priority-badge">Alta</span>
+        <div class="info">
+          <div class="tela-name">Tela 4 — Ranking Mata-Mata</div>
+          <div class="tela-desc">Usuários engajados — momento ideal para converter</div>
+        </div>
+      </div>
+      <div class="priority-card alta">
+        <span class="priority-badge">Alta</span>
+        <div class="info">
+          <div class="tela-name">Tela 3 — Dia 28/06</div>
+          <div class="tela-desc">Urgência de "entre antes que comece"</div>
+        </div>
+      </div>
+      <div class="priority-card media">
+        <span class="priority-badge">Média</span>
+        <div class="info">
+          <div class="tela-name">Tela 1 — Ad Placeholder</div>
+          <div class="tela-desc">Aumenta CTR com cores e CTA claros</div>
+        </div>
+      </div>
+      <div class="priority-card baixa">
+        <span class="priority-badge">Baixa</span>
+        <div class="info">
+          <div class="tela-name">Tela 2 — Posicionamento do Ad</div>
+          <div class="tela-desc">Ad aparece no momento certo do scroll</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 1 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <h2>Ad Placeholder redesenhado</h2>
+        <span class="ref">📎 Home c ad.jpeg</span>
+      </div>
+      <div class="section-body">
+        <div class="problem-box">
+          <strong>Problema:</strong> O ad atual (fundo azul escuro, sem CTA, texto pequeno) se perde no feed — sem contraste com os cards brancos da home e sem chamada para ação visível.
+        </div>
+
+        <h3>Especificações visuais</h3>
+        <table>
+          <thead>
+            <tr><th>Elemento</th><th>Atual</th><th>Proposto</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fundo</strong></td>
+              <td class="atual"><span class="color-swatch" style="background:#1A1E6F"></span>Azul escuro (#1A1E6F)</td>
+              <td class="proposto"><span class="color-swatch" style="background:linear-gradient(135deg,#EA1D2C,#FFC244);background:-webkit-linear-gradient(135deg,#EA1D2C,#FFC244)"></span>Gradiente laranja → amarelo<br><small>#EA1D2C → #FFC244</small></td>
+            </tr>
+            <tr>
+              <td><strong>Headline</strong></td>
+              <td class="atual">"O JOGO RECOMEÇA EM 28/06"</td>
+              <td class="proposto">"Ranking Mata-Mata: 1º lugar ganha R$ 1 MILHÃO"</td>
+            </tr>
+            <tr>
+              <td><strong>Sub-copy</strong></td>
+              <td class="atual">Texto longo explicando o ranking do zero</td>
+              <td class="proposto">"Só para Clube iFood. Ainda dá tempo de entrar."</td>
+            </tr>
+            <tr>
+              <td><strong>CTA</strong></td>
+              <td class="atual">Nenhum</td>
+              <td class="proposto">Botão: "QUERO SER CLUBE IFOOD →"<br><small>Fundo branco · texto laranja iFood · bordas arredondadas</small></td>
+            </tr>
+            <tr>
+              <td><strong>Ícones</strong></td>
+              <td class="atual">Logo CazéTV</td>
+              <td class="proposto">Manter CazéTV + troféu 🏆 próximo ao valor R$1M</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Hierarquia visual</h3>
+        <div class="wireframe-label">Wireframe</div>
+        <div class="wireframe">[Logo CazéTV]          [🏆 R$1.000.000]
+─────────────────────────────────────────
+RANKING MATA-MATA
+1º lugar ganha R$ 1 MILHÃO
+
+Só para Clube iFood. Ainda dá tempo de entrar.
+
+[   QUERO SER CLUBE IFOOD →   ]</div>
+
+        <p class="visual-note">CTA exemplo:</p>
+        <span class="cta-example white">QUERO SER CLUBE IFOOD →</span>
+      </div>
+    </div>
+
+    <!-- TELA 2 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <h2>Posicionamento do Ad na Home</h2>
+        <span class="ref">📎 Home.jpeg</span>
+      </div>
+      <div class="section-body">
+        <p style="font-size:14px;margin-bottom:16px;">Print de referência — define onde o ad placeholder deve ser inserido no scroll vertical da home.</p>
+
+        <h3>Regra de posicionamento</h3>
+        <ul>
+          <li>Inserir o ad <strong>entre o 2º e o 3º card de jogo</strong> de cada dia</li>
+          <li>Não exibir antes do jogo 1 (não interrompe a entrada na tela)</li>
+          <li>Não exibir após o último jogo do dia</li>
+        </ul>
+
+        <h3>Mapeamento do scroll</h3>
+        <div class="wireframe-label">Estrutura de um dia com 4+ jogos</div>
+        <div class="wireframe">┌──────────────────────┐
+│   Card Jogo 1        │  ← entra sem interrupção
+├──────────────────────┤
+│   Card Jogo 2        │
+├──────────────────────┤
+│   AD PLACEHOLDER     │  ← posição fixa
+│   (full-width)       │
+├──────────────────────┤
+│   Card Jogo 3        │
+├──────────────────────┤
+│   Card Jogo 4        │
+└──────────────────────┘</div>
+      </div>
+    </div>
+
+    <!-- TELA 3 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <h2>Dia 28/06 — Estado vazio + banner Mata-Mata</h2>
+        <span class="ref">📎 dia 28.06.jpeg</span>
+      </div>
+      <div class="section-body">
+        <div class="problem-box">
+          <strong>Problema:</strong> O dia 28/06 aparecerá no carrossel sem jogos definidos (mata-mata ainda não sorteado). Hoje a tela ficaria com estado vazio — espaço de oportunidade perdido.
+        </div>
+
+        <h3>Carrossel de datas</h3>
+        <ul>
+          <li>Adicionar <strong>"28 JUNHO"</strong> seguindo o mesmo padrão visual dos outros dias</li>
+          <li>Sub-label: <strong>"Mata-Mata"</strong> (substitui "Fase de grupos")</li>
+        </ul>
+
+        <h3>Banner full-width (ocupa o espaço dos cards)</h3>
+        <div class="wireframe-label">Wireframe — banner único vertical (~80% da viewport)</div>
+        <div class="wireframe">┌──────────────────────────────────────┐
+│                                      │
+│  🏟️  A FASE DECISIVA COMEÇA AQUI     │
+│                                      │
+│  Os confrontos serão definidos em    │
+│  breve. Assim que confirmados, você  │
+│  já poderá dar seus palpites.        │
+│                                      │
+│  ──────────────────────────────────  │
+│  Por que virar Clube iFood?          │
+│                                      │
+│  🏆  Concorra a R$1 milhão           │
+│  ⭐  Pontuação exclusiva no Mata-Mata│
+│  🛡️  Vantagens iFood durante a Copa  │
+│                                      │
+│  [     VIRAR CLUBE IFOOD     ]       │
+│                                      │
+└──────────────────────────────────────┘</div>
+
+        <p class="visual-note">Fundo: azul iFood · Texto: branco · CTA: botão laranja iFood · Dimensão: ~80% da altura da viewport</p>
+        <span class="cta-example">VIRAR CLUBE IFOOD</span>
+      </div>
+    </div>
+
+    <!-- TELA 4 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <h2>Ranking Mata-Mata — Empty state com conteúdo</h2>
+        <span class="ref">📎 ranking mata mata.jpeg</span>
+      </div>
+      <div class="section-body">
+        <div class="problem-box">
+          <strong>Problema:</strong> Tela completamente vazia — só exibe "O ranking ainda está inativo." Usuários que chegam até rankings já estão engajados. Oportunidade desperdiçada.
+        </div>
+
+        <div class="keep-box">
+          <strong>O que manter:</strong> Cabeçalho "RANKINGS" · Seletor "RANKING DO MATA-MATA" com arrows · Tabs GERAL / CLUBE IFOOD · <strong>Barra verde de posição do usuário</strong> (ancora o usuário na tela)
+        </div>
+
+        <h3>Bloco a inserir na área vazia</h3>
+
+        <div class="part">
+          <div class="part-header">Parte 1 — Como funciona o Mata-Mata</div>
+          <div class="part-body">
+            <div class="wireframe-label">Fundo branco · numeração em azul iFood</div>
+            <div class="wireframe">COMO FUNCIONA O MATA-MATA
+
+  1  Palpite nos jogos das
+     oitavas, quartas e semis
+
+  2  Acumule pontos a
+     cada acerto
+
+  3  O 1º colocado Clube iFood
+     leva R$ 1 MILHÃO</div>
+          </div>
+        </div>
+
+        <div class="part">
+          <div class="part-header">Parte 2 — Por que Clube iFood</div>
+          <div class="part-body">
+            <div class="wireframe-label">Fundo verde limão (mesma cor da barra de posição — cria coesão visual)</div>
+            <div class="wireframe">┌──────────────────────────────────────┐  ← verde limão
+│                                      │
+│  🏆 Clube iFood concorre ao prêmio   │
+│     de R$ 1 MILHÃO                   │
+│                                      │
+│  Usuários Geral participam,          │
+│  mas ficam fora da premiação.        │
+│                                      │
+│  [    ASSINAR CLUBE IFOOD    ]       │
+│                                      │
+└──────────────────────────────────────┘</div>
+            <span class="cta-example green">ASSINAR CLUBE IFOOD</span>
+          </div>
+        </div>
+
+        <div class="part">
+          <div class="part-header">Parte 3 — Mensagem de status (substituir o texto atual)</div>
+          <div class="part-body">
+            <table>
+              <thead><tr><th>Atual</th><th>Proposto</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="atual">"O ranking ainda está inativo."</td>
+                  <td class="proposto">"O ranking será ativado em 28/06, quando começar o Mata-Mata."</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <div class="doc-footer">
+    Brief Design · Bolão Copa do Mundo FIFA 2026 · CazéTV × iFood × LiveLike · 25/06/2026
+  </div>
+
+</div>
+</body>
+</html>

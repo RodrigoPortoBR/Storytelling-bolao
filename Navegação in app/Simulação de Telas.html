@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulação de Telas — Bolão Copa 2026</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0D1117;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #F9FAFB;
+  padding: 40px 20px 80px;
+}
+
+/* ── Doc header ── */
+.doc-header { text-align: center; max-width: 680px; margin: 0 auto 52px; }
+.doc-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4B5563; margin-bottom: 10px; }
+.doc-title { font-size: 26px; font-weight: 900; background: linear-gradient(135deg, #EA1D2C, #FF8C00, #FFC244); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+.doc-sub { color: #6B7280; font-size: 14px; line-height: 1.6; }
+.doc-sub strong { color: #A8E63D; }
+.legend { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7280; }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ── Section ── */
+.section { max-width: 760px; margin: 0 auto 68px; }
+.sec-hdr { display: flex; align-items: flex-start; gap: 14px; padding: 14px 18px; background: #161B22; border: 1px solid #21262D; border-radius: 12px; margin-bottom: 24px; }
+.sec-n { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #EA1D2C, #FF6B35); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: white; }
+.sec-info h2 { font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+.sec-info p { font-size: 13px; color: #9CA3AF; line-height: 1.5; }
+.sec-tag { margin-left: auto; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; align-self: center; white-space: nowrap; }
+.alta { background: #7F1D1D; color: #FCA5A5; }
+.media { background: #78350F; color: #FCD34D; }
+.baixa { background: #1E3A5F; color: #93C5FD; }
+
+/* ── Phones row ── */
+.phones { display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+.ph-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.ph-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 14px; border-radius: 20px; }
+.lb-a { background: #1F2937; color: #9CA3AF; }
+.lb-d { background: #064E3B; color: #6EE7B7; }
+.arrow-sep { align-self: center; color: #374151; font-size: 26px; padding-top: 60px; flex-shrink: 0; }
+
+/* ── Phone frame ── */
+.phone { width: 272px; background: white; border: 7px solid #21262D; border-radius: 36px; overflow: hidden; box-shadow: inset 0 0 0 1px #30363D, 0 0 0 1px #30363D, 0 20px 50px rgba(0,0,0,0.65); }
+
+/* ── App chrome ── */
+.sbar { background: #2D3FCC; padding: 7px 15px 5px; display: flex; justify-content: space-between; align-items: center; }
+.sbar-t { color: white; font-size: 11px; font-weight: 700; }
+.sbar-i { color: white; font-size: 10px; display: flex; align-items: center; gap: 3px; }
+
+.ahdr { background: #3547E5; padding: 8px 12px 10px; display: flex; align-items: center; gap: 8px; }
+.av { width: 32px; height: 32px; border-radius: 50%; background: #FFC244; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; overflow: hidden; }
+.uinfo { flex: 1; }
+.uname { color: white; font-weight: 900; font-size: 13px; line-height: 1; }
+.uclube { font-size: 10px; color: #C4CCFF; display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+.gem { color: #FF8FE0; }
+.hicos { display: flex; gap: 5px; }
+.hico { width: 24px; height: 24px; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; }
+
+.tabs { background: white; display: flex; border-bottom: 2px solid #F3F4F6; }
+.tab { flex: 1; text-align: center; padding: 9px 4px 7px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #9CA3AF; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.tab.on { color: #3547E5; border-bottom-color: #3547E5; }
+
+/* ── Content ── */
+.cnt { background: linear-gradient(180deg, #B5C3FC 0%, #8B9EF2 100%); padding: 10px 8px; }
+.cnt-wh { background: white; }
+
+/* ── Game card ── */
+.gc { background: white; border-radius: 10px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+.gc-top { padding: 9px 12px 0; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.gc-lbl { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #111; letter-spacing: 0.2px; }
+.exp { background: #3547E5; color: white; font-size: 8px; font-weight: 700; padding: 3px 6px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.gc-sub { font-size: 9px; color: #9CA3AF; padding: 2px 12px 6px; }
+.teams { display: flex; align-items: center; justify-content: center; padding: 4px 12px 8px; }
+.tm { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.tmf { font-size: 24px; line-height: 1; }
+.tmc { font-size: 12px; font-weight: 900; color: #111; }
+.scc { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 0 8px; }
+.sca { color: #C4C8D8; font-size: 11px; line-height: 1.3; }
+.scn { font-size: 28px; font-weight: 200; color: #C4C8D8; line-height: 1; }
+.ora { border-top: 1px solid #F3F4F6; padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; }
+.ora-l { font-size: 9px; font-weight: 800; color: #3547E5; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 3px; }
+.btn { margin: 6px 10px 10px; padding: 10px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 12px; }
+.btn-p { background: #EA1D2C; color: white; }
+.btn-s { background: #EAEBEC; color: #9CA3AF; }
+
+/* ── Share bar ── */
+.share { background: #FFC244; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #111; }
+
+/* ── Ad ANTES (dark blue) ── */
+.ad-a { background: #191E6E; border-radius: 10px; padding: 16px 14px; margin-bottom: 8px; }
+.ad-a .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.ad-cazetv { font-size: 9px; font-weight: 700; color: white; border: 1px solid rgba(255,255,255,0.35); padding: 2px 6px; border-radius: 3px; display: inline-block; }
+.ad-a .ttl { color: white; font-size: 14px; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin-bottom: 6px; }
+.ad-a .bod { color: rgba(255,255,255,0.7); font-size: 11px; line-height: 1.5; }
+
+/* ── Ad DEPOIS (orange gradient) ── */
+.ad-d { background: linear-gradient(135deg, #D91826 0%, #FF6300 55%, #FFC244 100%); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+.ad-d .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.ad-d .cazetv-n { font-size: 9px; font-weight: 700; background: rgba(0,0,0,0.2); color: white; padding: 2px 6px; border-radius: 3px; }
+.ad-d .trofeu { font-size: 20px; }
+.ad-d .ttl { color: white; font-size: 13px; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin-bottom: 4px; }
+.ad-d .sub { color: rgba(255,255,255,0.9); font-size: 11px; line-height: 1.4; margin-bottom: 12px; }
+.ad-cta { background: white; color: #D91826; font-size: 11px; font-weight: 900; padding: 9px 12px; border-radius: 8px; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Change annotations ── */
+.chg { position: relative; }
+.tag-novo { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: #10B981; color: white; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 10px; border-radius: 20px; z-index: 5; white-space: nowrap; }
+.tag-alt { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: #F59E0B; color: #111; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 10px; border-radius: 20px; z-index: 5; white-space: nowrap; }
+.highlight-novo { outline: 2px dashed #10B981; outline-offset: -2px; }
+.highlight-alt { outline: 2px dashed #F59E0B; outline-offset: -2px; }
+
+/* ── Date carousel ── */
+.dcar { background: white; padding: 10px 14px; display: flex; gap: 20px; border-bottom: 1px solid #F3F4F6; }
+.di .dn { font-size: 17px; font-weight: 900; }
+.di .dn.past { color: #D1D5DB; }
+.di .dn.act { color: #3547E5; }
+.di .dp { font-size: 9px; color: #9CA3AF; margin-top: 1px; }
+.di .dp.mm { color: #EA1D2C; font-weight: 700; }
+
+/* ── Empty state 28/06 ── */
+.empty28 { padding: 40px 20px; text-align: center; }
+.empty28 p { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── Mata-Mata Banner ── */
+.mmb { background: #3547E5; border-radius: 10px; padding: 18px 14px; }
+.mmb-chip { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+.mmb-ttl { color: white; font-size: 15px; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin-bottom: 6px; }
+.mmb-sub { color: rgba(255,255,255,0.8); font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
+.mmb-div { border-top: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; }
+.mmb-why { color: rgba(255,255,255,0.65); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.mmb-bens { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.mmb-ben { display: flex; align-items: center; gap: 8px; color: white; font-size: 11px; font-weight: 600; }
+.mmb-ben .ic { font-size: 13px; width: 20px; text-align: center; }
+.mmb-cta { background: #FFC244; color: #111; font-size: 12px; font-weight: 900; padding: 10px; border-radius: 8px; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Ranking screen ── */
+.rk-hdr { background: white; padding: 10px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #F3F4F6; }
+.rk-back { color: #111; font-size: 16px; font-weight: 300; }
+.rk-title { flex: 1; text-align: center; font-size: 13px; font-weight: 900; color: #111; text-transform: uppercase; letter-spacing: 0.5px; }
+.rk-sel { background: #3547E5; color: white; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.rk-sel .arr { color: rgba(255,255,255,0.55); font-size: 14px; }
+.rk-tabs { background: white; display: flex; border-bottom: 2px solid #F3F4F6; }
+.rt { flex: 1; text-align: center; padding: 8px 4px 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.rt.on { color: #3547E5; border-bottom-color: #3547E5; }
+.up-bar { background: #A8E63D; padding: 8px 14px; display: flex; align-items: center; }
+.up-pos { font-size: 17px; font-weight: 900; color: #1A3A00; min-width: 28px; }
+.up-nm { flex: 1; font-size: 13px; font-weight: 800; color: #1A3A00; }
+.up-pts { font-size: 17px; font-weight: 900; color: #1A3A00; }
+.rk-cols { background: white; padding: 5px 14px; display: flex; border-bottom: 1px solid #F3F4F6; gap: 4px; }
+.rc { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; }
+.rc.nm { flex: 1; padding-left: 10px; }
+.rk-empty { background: white; padding: 44px 20px; text-align: center; font-size: 12px; color: #9CA3AF; }
+
+/* ── Ranking DEPOIS content ── */
+.hiw { background: white; padding: 14px; border-bottom: 1px solid #F3F4F6; }
+.hiw-ttl { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #111; margin-bottom: 12px; }
+.hiw-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; }
+.hiw-n { width: 20px; height: 20px; flex-shrink: 0; background: #3547E5; color: white; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.hiw-t { font-size: 11px; color: #374151; line-height: 1.4; }
+.hiw-t strong { color: #111; display: block; font-size: 11px; }
+
+.why-club { background: #A8E63D; padding: 14px; }
+.wc-lbl { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; color: #2D5A00; margin-bottom: 4px; }
+.wc-p { font-size: 16px; font-weight: 900; color: #1A3A00; margin-bottom: 2px; }
+.wc-sub { font-size: 11px; color: #3A6B00; line-height: 1.4; margin-bottom: 10px; }
+.wc-cta { background: #EA1D2C; color: white; font-size: 11px; font-weight: 900; padding: 9px; border-radius: 8px; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.rk-status { background: white; padding: 11px 14px; text-align: center; font-size: 11px; color: #9CA3AF; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ── Doc header ── -->
+<div class="doc-header">
+  <div class="doc-eyebrow">Bolão Copa do Mundo FIFA 2026 · CazéTV × iFood</div>
+  <div class="doc-title">Simulação de Telas — Conversão Clube iFood</div>
+  <div class="doc-sub">Mudanças para comunicar o Ranking Mata-Mata (28/06) e converter usuários em <strong>Clube iFood</strong> — prêmio de R$1 milhão para o 1º colocado.</div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#10B981"></div> NOVO — elemento adicionado</div>
+    <div class="leg"><div class="leg-dot" style="background:#F59E0B"></div> ALTERADO — elemento modificado</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TELA 1 — AD PLACEHOLDER                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="sec-n">1</div>
+    <div class="sec-info">
+      <h2>Ad Placeholder — redesenhado</h2>
+      <p>Cores, copy e CTA alterados para criar contraste e urgência de conversão.</p>
+    </div>
+  </div>
+
+  <div class="phones">
+
+    <!-- ANTES -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-a">Antes</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="ahdr">
+          <div class="av">🙂</div>
+          <div class="uinfo"><div class="uname">Rod</div><div class="uclube"><span class="gem">♦</span>clube ifood</div></div>
+          <div class="hicos"><div class="hico">🏆</div><div class="hico">?</div><div class="hico">✕</div></div>
+        </div>
+        <div class="tabs"><div class="tab on">Partidas</div><div class="tab">Ligas</div><div class="tab">Perfil</div></div>
+        <div class="cnt">
+          <!-- Game card ALG vs AUT -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ Expira em 01D:07H:26M</span></div>
+            <div class="gc-sub">Grupo A, Seattle Stadium, 5:00 PM</div>
+            <div class="teams">
+              <div class="tm"><div class="tmf">🇩🇿</div><div class="tmc">ALG</div></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="tm"><div class="tmf">🇦🇹</div><div class="tmc">AUT</div></div>
+            </div>
+            <div class="ora"><div class="ora-l"><span>✦</span>O Oráculo Diz</div><span style="color:#9CA3AF;font-size:11px;">∨</span></div>
+            <div class="btn btn-p">Enviar palpite</div>
+          </div>
+          <!-- AD: dark blue (ANTES) -->
+          <div class="ad-a">
+            <div class="row"><div></div><span class="ad-cazetv">CazéTV</span></div>
+            <div class="ttl">O jogo recomeça em 28/06</div>
+            <div class="bod">No Ranking Mata-Mata, todo mundo começa do zero. Nova disputa e prêmio de R$ 1 milhão para o 1º colocado Clube iFood!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-sep">→</div>
+
+    <!-- DEPOIS -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-d">Depois</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="ahdr">
+          <div class="av">🙂</div>
+          <div class="uinfo"><div class="uname">Rod</div><div class="uclube"><span class="gem">♦</span>clube ifood</div></div>
+          <div class="hicos"><div class="hico">🏆</div><div class="hico">?</div><div class="hico">✕</div></div>
+        </div>
+        <div class="tabs"><div class="tab on">Partidas</div><div class="tab">Ligas</div><div class="tab">Perfil</div></div>
+        <div class="cnt">
+          <!-- Same game card -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ Expira em 01D:07H:26M</span></div>
+            <div class="gc-sub">Grupo A, Seattle Stadium, 5:00 PM</div>
+            <div class="teams">
+              <div class="tm"><div class="tmf">🇩🇿</div><div class="tmc">ALG</div></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="tm"><div class="tmf">🇦🇹</div><div class="tmc">AUT</div></div>
+            </div>
+            <div class="ora"><div class="ora-l"><span>✦</span>O Oráculo Diz</div><span style="color:#9CA3AF;font-size:11px;">∨</span></div>
+            <div class="btn btn-p">Enviar palpite</div>
+          </div>
+          <!-- AD: orange gradient (DEPOIS) -->
+          <div class="chg">
+            <span class="tag-alt">Alterado</span>
+            <div class="ad-d highlight-alt">
+              <div class="row"><span class="cazetv-n">CazéTV</span><span class="trofeu">🏆</span></div>
+              <div class="ttl">Ranking Mata-Mata:<br>1º lugar ganha R$ 1 MILHÃO</div>
+              <div class="sub">Só para Clube iFood. Ainda dá tempo de entrar.</div>
+              <div class="ad-cta">QUERO SER CLUBE IFOOD →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phones -->
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TELA 2 — POSICIONAMENTO DO AD              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="sec-n">2</div>
+    <div class="sec-info">
+      <h2>Posicionamento do Ad na Home</h2>
+      <p>Ad fixado entre o 2º e o 3º jogo de cada dia no scroll vertical.</p>
+    </div>
+  </div>
+
+  <div class="phones">
+    <div class="ph-col">
+      <span class="ph-lbl lb-d">Posição correta</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="ahdr">
+          <div class="av">🙂</div>
+          <div class="uinfo"><div class="uname">Rod</div><div class="uclube"><span class="gem">♦</span>clube ifood</div></div>
+          <div class="hicos"><div class="hico">🏆</div><div class="hico">?</div><div class="hico">✕</div></div>
+        </div>
+        <div class="tabs"><div class="tab on">Partidas</div><div class="tab">Ligas</div><div class="tab">Perfil</div></div>
+        <div class="cnt">
+          <!-- Jogo 1 (compact) -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ 00H:27M:31S</span></div>
+            <div class="gc-sub">Grupo E, Philadelphia Stadium, 5:00 PM</div>
+            <div class="teams">
+              <div class="tm"><div class="tmf">🇨🇼</div><div class="tmc">CUW</div></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">3</span><span class="sca">↓</span></div>
+              <div class="tm"><div class="tmf">🇨🇮</div><div class="tmc">CIV</div></div>
+            </div>
+            <div class="btn btn-s">Editar</div>
+          </div>
+          <!-- Jogo 2 (compact) -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ 01D:07H:26M</span></div>
+            <div class="gc-sub">Grupo G, Seattle Stadium, 12:00 AM</div>
+            <div class="teams">
+              <div class="tm"><div class="tmf">🇪🇬</div><div class="tmc">EGY</div></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="tm"><div class="tmf">🇮🇷</div><div class="tmc">IRN</div></div>
+            </div>
+            <div class="btn btn-s">Editar</div>
+          </div>
+          <!-- AD entre jogo 2 e 3 -->
+          <div class="chg">
+            <span class="tag-novo">Ad aqui — entre jogo 2 e 3</span>
+            <div class="ad-d highlight-novo" style="margin-bottom:8px;">
+              <div class="row"><span class="cazetv-n">CazéTV</span><span class="trofeu">🏆</span></div>
+              <div class="ttl">Ranking Mata-Mata:<br>1º lugar ganha R$ 1 MILHÃO</div>
+              <div class="sub">Só para Clube iFood. Ainda dá tempo de entrar.</div>
+              <div class="ad-cta">QUERO SER CLUBE IFOOD →</div>
+            </div>
+          </div>
+          <!-- Jogo 3 header -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ 02H:37M:15S</span></div>
+            <div class="gc-sub">Grupo B, SoFi Stadium, 8:00 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TELA 3 — DIA 28/06                         -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="sec-n">3</div>
+    <div class="sec-info">
+      <h2>Dia 28/06 — Banner Mata-Mata</h2>
+      <p>Dia sem jogos definidos vira espaço de comunicação do Mata-Mata e conversão.</p>
+    </div>
+  </div>
+
+  <div class="phones">
+
+    <!-- ANTES: 27/06 com jogo normal -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-a">27/06 — Antes (referência)</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="ahdr">
+          <div class="av">🙂</div>
+          <div class="uinfo"><div class="uname">Rod</div><div class="uclube"><span class="gem">♦</span>clube ifood</div></div>
+          <div class="hicos"><div class="hico">🏆</div><div class="hico">?</div><div class="hico">✕</div></div>
+        </div>
+        <div class="tabs"><div class="tab on">Partidas</div><div class="tab">Ligas</div><div class="tab">Perfil</div></div>
+        <!-- Date carousel: 26 e 27 junho -->
+        <div class="dcar">
+          <div class="di"><div class="dn past">26 JUNHO</div><div class="dp">Fase de grupos</div></div>
+          <div class="di"><div class="dn act">27 JUNHO</div><div class="dp">Fase de grupos</div></div>
+        </div>
+        <div class="cnt">
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ 01D:07H:26M</span></div>
+            <div class="gc-sub">Grupo G, Seattle Stadium, 12:00 AM</div>
+            <div class="teams">
+              <div class="tm"><div class="tmf">🇪🇬</div><div class="tmc">EGY</div></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="scc"><span class="sca">↑</span><span class="scn">0</span><span class="sca">↓</span></div>
+              <div class="tm"><div class="tmf">🇮🇷</div><div class="tmc">IRN</div></div>
+            </div>
+            <div class="btn btn-s">Editar</div>
+          </div>
+          <div class="share">📤 Compartilhar essa experiência</div>
+          <!-- segundo jogo cortado -->
+          <div class="gc">
+            <div class="gc-top"><span class="gc-lbl">Palpite o placar</span><span class="exp">⏱ 01D:07H:26M</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-sep">→</div>
+
+    <!-- DEPOIS: 28/06 com banner mata-mata -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-d">28/06 — Depois (novo)</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="ahdr">
+          <div class="av">🙂</div>
+          <div class="uinfo"><div class="uname">Rod</div><div class="uclube"><span class="gem">♦</span>clube ifood</div></div>
+          <div class="hicos"><div class="hico">🏆</div><div class="hico">?</div><div class="hico">✕</div></div>
+        </div>
+        <div class="tabs"><div class="tab on">Partidas</div><div class="tab">Ligas</div><div class="tab">Perfil</div></div>
+        <!-- Date carousel: 27 passado, 28 ativo -->
+        <div class="chg">
+          <span class="tag-alt">Alterado</span>
+          <div class="dcar highlight-alt">
+            <div class="di"><div class="dn past">27 JUNHO</div><div class="dp">Fase de grupos</div></div>
+            <div class="di"><div class="dn act">28 JUNHO</div><div class="dp mm">Mata-Mata</div></div>
+          </div>
+        </div>
+        <div class="cnt">
+          <!-- Banner mata-mata -->
+          <div class="chg">
+            <span class="tag-novo">Novo</span>
+            <div class="mmb highlight-novo">
+              <div class="mmb-chip">⚽ Fase decisiva</div>
+              <div class="mmb-ttl">A fase decisiva começa aqui.</div>
+              <div class="mmb-sub">Os confrontos serão definidos em breve. Assim que confirmados, você já poderá dar seus palpites.</div>
+              <div class="mmb-div"></div>
+              <div class="mmb-why">Por que virar Clube iFood?</div>
+              <div class="mmb-bens">
+                <div class="mmb-ben"><span class="ic">🏆</span>Concorra a R$1 milhão</div>
+                <div class="mmb-ben"><span class="ic">⭐</span>Pontuação exclusiva no Mata-Mata</div>
+                <div class="mmb-ben"><span class="ic">🛡️</span>Vantagens iFood durante a Copa</div>
+              </div>
+              <div class="mmb-cta">VIRAR CLUBE IFOOD</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phones -->
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TELA 4 — RANKING MATA-MATA                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr">
+    <div class="sec-n">4</div>
+    <div class="sec-info">
+      <h2>Ranking Mata-Mata — empty state com conteúdo</h2>
+      <p>Tela vazia vira explicação do Mata-Mata + bloco de conversão Clube iFood.</p>
+    </div>
+  </div>
+
+  <div class="phones">
+
+    <!-- ANTES -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-a">Antes</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="cnt-wh">
+          <div class="rk-hdr"><span class="rk-back">←</span><span class="rk-title">Rankings</span></div>
+          <div class="rk-sel"><span class="arr">←</span><span>Ranking do Mata-Mata</span><span class="arr">→</span></div>
+          <div class="rk-tabs"><div class="rt on">Geral</div><div class="rt">Clube iFood</div></div>
+          <div class="up-bar"><span class="up-pos">—</span><span class="up-nm">Rod</span><span class="up-pts">0</span></div>
+          <div class="rk-cols"><span class="rc">Ranking</span><span class="rc nm">Nome</span><span class="rc">Pontos</span></div>
+          <div class="rk-empty">O ranking ainda está inativo.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-sep">→</div>
+
+    <!-- DEPOIS -->
+    <div class="ph-col">
+      <span class="ph-lbl lb-d">Depois</span>
+      <div class="phone">
+        <div class="sbar"><span class="sbar-t">16:33</span><div class="sbar-i"><span>●●●</span><span>WiFi</span><span>75%</span></div></div>
+        <div class="cnt-wh">
+          <div class="rk-hdr"><span class="rk-back">←</span><span class="rk-title">Rankings</span></div>
+          <div class="rk-sel"><span class="arr">←</span><span>Ranking do Mata-Mata</span><span class="arr">→</span></div>
+          <div class="rk-tabs"><div class="rt on">Geral</div><div class="rt">Clube iFood</div></div>
+          <div class="up-bar"><span class="up-pos">—</span><span class="up-nm">Rod</span><span class="up-pts">0</span></div>
+          <div class="rk-cols"><span class="rc">Ranking</span><span class="rc nm">Nome</span><span class="rc">Pontos</span></div>
+          <!-- Como funciona -->
+          <div class="chg">
+            <span class="tag-novo">Novo</span>
+            <div class="hiw highlight-novo">
+              <div class="hiw-ttl">Como funciona o Mata-Mata</div>
+              <div class="hiw-step"><div class="hiw-n">1</div><div class="hiw-t"><strong>Palpite nos jogos</strong>Oitavas, quartas, semis e final</div></div>
+              <div class="hiw-step"><div class="hiw-n">2</div><div class="hiw-t"><strong>Acumule pontos</strong>A cada acerto no placar</div></div>
+              <div class="hiw-step"><div class="hiw-n">3</div><div class="hiw-t"><strong>1º colocado Clube iFood</strong>Leva R$ 1 MILHÃO</div></div>
+            </div>
+          </div>
+          <!-- Por que Clube iFood -->
+          <div class="chg">
+            <span class="tag-novo">Novo</span>
+            <div class="why-club highlight-novo">
+              <div class="wc-lbl">🏆 Por que Clube iFood?</div>
+              <div class="wc-p">R$ 1.000.000</div>
+              <div class="wc-sub">Clube iFood concorre ao prêmio. Usuários Geral participam, mas ficam fora da premiação.</div>
+              <div class="wc-cta">ASSINAR CLUBE IFOOD</div>
+            </div>
+          </div>
+          <!-- Status atualizado -->
+          <div class="chg">
+            <span class="tag-alt">Alterado</span>
+            <div class="rk-status highlight-alt">O ranking será ativado em 28/06, quando começar o Mata-Mata.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phones -->
+</div>
+
+<div style="text-align:center; color:#374151; font-size:12px; margin-top:16px;">Brief Design · Bolão Copa do Mundo FIFA 2026 · 25/06/2026</div>
+
+</body>
+</html>
